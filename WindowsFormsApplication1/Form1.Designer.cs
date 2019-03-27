@@ -28,47 +28,47 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.simpleOpenGlControl1 = new Tao.Platform.Windows.SimpleOpenGlControl();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.SuspendLayout();
-            // 
-            // simpleOpenGlControl1
-            // 
-            this.simpleOpenGlControl1.AccumBits = ((byte)(0));
-            this.simpleOpenGlControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.simpleOpenGlControl1.AutoCheckErrors = false;
-            this.simpleOpenGlControl1.AutoFinish = false;
-            this.simpleOpenGlControl1.AutoMakeCurrent = true;
-            this.simpleOpenGlControl1.AutoSwapBuffers = true;
-            this.simpleOpenGlControl1.BackColor = System.Drawing.Color.Black;
-            this.simpleOpenGlControl1.ColorBits = ((byte)(32));
-            this.simpleOpenGlControl1.DepthBits = ((byte)(16));
-            this.simpleOpenGlControl1.Location = new System.Drawing.Point(2, 2);
-            this.simpleOpenGlControl1.Name = "simpleOpenGlControl1";
-            this.simpleOpenGlControl1.Size = new System.Drawing.Size(650, 399);
-            this.simpleOpenGlControl1.StencilBits = ((byte)(0));
-            this.simpleOpenGlControl1.TabIndex = 0;
-           // this.simpleOpenGlControl1.Load += new System.EventHandler(this.simpleOpenGlControl1_Load);
-            this.simpleOpenGlControl1.Paint += new System.Windows.Forms.PaintEventHandler(this.simpleOpenGlControl1_Paint);
-            // 
-            // timer1
-            // 
-            this.timer1.Enabled = true;
-            this.timer1.Interval = 1;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // Form1
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(653, 402);
-            this.Controls.Add(this.simpleOpenGlControl1);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            this.ResumeLayout(false);
+			this.components = new System.ComponentModel.Container();
+			this.simpleOpenGlControl1 = new Tao.Platform.Windows.SimpleOpenGlControl();
+			this.timer1 = new System.Windows.Forms.Timer(this.components);
+			this.SuspendLayout();
+			// 
+			// simpleOpenGlControl1
+			// 
+			this.simpleOpenGlControl1.AccumBits = ((byte)(0));
+			this.simpleOpenGlControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.simpleOpenGlControl1.AutoCheckErrors = false;
+			this.simpleOpenGlControl1.AutoFinish = false;
+			this.simpleOpenGlControl1.AutoMakeCurrent = true;
+			this.simpleOpenGlControl1.AutoSwapBuffers = true;
+			this.simpleOpenGlControl1.BackColor = System.Drawing.Color.Black;
+			this.simpleOpenGlControl1.ColorBits = ((byte)(32));
+			this.simpleOpenGlControl1.DepthBits = ((byte)(16));
+			this.simpleOpenGlControl1.Location = new System.Drawing.Point(2, 2);
+			this.simpleOpenGlControl1.Name = "simpleOpenGlControl1";
+			this.simpleOpenGlControl1.Size = new System.Drawing.Size(650, 399);
+			this.simpleOpenGlControl1.StencilBits = ((byte)(0));
+			this.simpleOpenGlControl1.TabIndex = 0;
+			this.simpleOpenGlControl1.Paint += new System.Windows.Forms.PaintEventHandler(this.simpleOpenGlControl1_Paint);
+			this.simpleOpenGlControl1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.simpleOpenGlControl1_KeyPress);
+			// 
+			// timer1
+			// 
+			this.timer1.Enabled = true;
+			this.timer1.Interval = 1;
+			this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+			// 
+			// Form1
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.ClientSize = new System.Drawing.Size(653, 402);
+			this.Controls.Add(this.simpleOpenGlControl1);
+			this.Name = "Form1";
+			this.Text = "Form1";
+			this.ResumeLayout(false);
 
         }
 
