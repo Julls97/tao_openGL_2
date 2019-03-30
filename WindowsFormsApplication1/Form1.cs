@@ -16,8 +16,8 @@ namespace OpenGL_cube {
 		double xrot, yrot, zrot;
 		int width;
 		int height;
-		double speed = 1;
-
+		double speed = 3;
+		uint[] textures = new uint[6]; 
 		private void simpleOpenGlControl1_KeyPress(object sender, KeyPressEventArgs e) {
 			if (e.KeyChar == 'A' || e.KeyChar == 'a') { zrot += -speed; }
 			if (e.KeyChar == 'D' || e.KeyChar == 'd') { zrot += speed; }
@@ -113,36 +113,54 @@ namespace OpenGL_cube {
 			Gl.glCullFace(Gl.GL_BACK);
 
 			Gl.glEnable(Gl.GL_TEXTURE_2D);
-			var bmp = new Bitmap(@"E:\git projects\tao_openGL_2\7.bmp");
-			var bmpData = bmp.LockBits(
-				new Rectangle(0, 0, bmp.Width, bmp.Height),
-				ImageLockMode.ReadOnly,
-				PixelFormat.Format24bppRgb);
-			Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, (int)Gl.GL_RGB8,
-			bmp.Width, bmp.Height, 0, Gl.GL_BGR_EXT,
-			Gl.GL_UNSIGNED_BYTE, bmpData.Scan0);
 
-			Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
-
-			Gl.glEnable(Gl.GL_TEXTURE_GEN_S); //enable texture coordinate generation
-			Gl.glEnable(Gl.GL_TEXTURE_GEN_T);
+			Gl.glGenTextures(2, textures);
+			creatTexture(@"E:\git projects\tao_openGL_2\3.bmp", 1);
+		
+			Gl.glBindTexture(Gl.GL_TEXTURE_2D, textures[0]);
 
 			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR);
 			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
-			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP);
-			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP);
+			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_REPEAT);
+			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT);
+			creatTexture(@"E:\git projects\tao_openGL_2\4.bmp", 0);
 
-			bmp.UnlockBits(bmpData);
+			Gl.glBindTexture(Gl.GL_TEXTURE_2D, textures[1]);
+			//Gl.glEnable(Gl.GL_TEXTURE_GEN_S); //enable texture coordinate generation
+			//Gl.glEnable(Gl.GL_TEXTURE_GEN_T);
+
+
+
+			Gl.glBindTexture(Gl.GL_TEXTURE_2D, textures[2]);
 
 			//LoadTexture(new Bitmap("1.bmp"), 0, true);
 			//quadr = Glu.gluNewQuadric();
 			//Glu.gluQuadricTexture(quadr, Gl.GL_TRUE);
-			//Gl.glEnable(Gl.GL_TEXTURE_2D);
+			//Gl.glEnable(Gl.GL_TEXTURE_2D);			//Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR);
+			//Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
+			//Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_REPEAT);
+			//Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT);
 			//Gl.glBindTexture(Gl.GL_TEXTURE_2D, texture[0]);
 			//Glu.gluSphere(quadr, 0.4, 50, 50);
 			//Gl.glDisable(Gl.GL_TEXTURE_2D);
 		}
+		private void creatTexture(String path, int level) {
+			var bmp = new Bitmap(path);
+			var bmpData = bmp.LockBits(
+				new Rectangle(0, 0, bmp.Width, bmp.Height),
+				ImageLockMode.ReadOnly,
+				PixelFormat.Format24bppRgb);
+			Gl.glGenTextures(2, textures);
+			Gl.glBindTexture(Gl.GL_TEXTURE_2D, textures[level]);
 
+			Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, (int)Gl.GL_RGB8,
+			bmp.Width, bmp.Height, 0, Gl.GL_BGR_EXT,
+			Gl.GL_UNSIGNED_BYTE, bmpData.Scan0);
+			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR);  // Linear Filtering 
+			Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);  // Linear Filtering 
+
+			bmp.UnlockBits(bmpData);
+		}
 		private void simpleOpenGlControl1_Paint(object sender, PaintEventArgs e) {
 			Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
 
@@ -159,48 +177,88 @@ namespace OpenGL_cube {
 			Gl.glPolygonMode(Gl.GL_BACK, Gl.GL_LINES);
 			Gl.glBegin(Gl.GL_QUADS);
 
-			////Вид сзади
-			Gl.glColor3ub(255, 0, 255);
-			Gl.glVertex3d(1, 1, -1);
-			Gl.glVertex3d(1, -1, -1);
-			Gl.glVertex3d(-1, -1, -1);
-			Gl.glVertex3d(-1, 1, -1);
+			Gl.glTexCoord2f(0.0f, 0.0f); Gl.glVertex3d(-1.0f, -1.0f, 1.0f); // Низ лево
+			Gl.glTexCoord2f(1.0f, 0.0f); Gl.glVertex3d(1.0f, -1.0f, 1.0f);  // Низ право
+			Gl.glTexCoord2f(1.0f, 1.0f); Gl.glVertex3d(1.0f, 1.0f, 1.0f);   // Верх право
+			Gl.glTexCoord2f(0.0f, 1.0f); Gl.glVertex3d(-1.0f, 1.0f, 1.0f);  // Верх лево
 
-			////вид снизу
-			Gl.glColor3ub(0, 255, 255);
-			Gl.glVertex3d(-1, -1, -1);
-			Gl.glVertex3d(1, -1, -1);
-			Gl.glVertex3d(1, -1, 1);
-			Gl.glVertex3d(-1, -1, 1);
+			// Задняя грань
+			Gl.glTexCoord2f(1.0f, 0.0f); Gl.glVertex3d(-1.0f, -1.0f, -1.0f);    // Низ право
+			Gl.glTexCoord2f(1.0f, 1.0f); Gl.glVertex3d(-1.0f, 1.0f, -1.0f); // Верх право
+			Gl.glTexCoord2f(0.0f, 1.0f); Gl.glVertex3d(1.0f, 1.0f, -1.0f);  // Верх лево
+			Gl.glTexCoord2f(0.0f, 0.0f); Gl.glVertex3d(1.0f, -1.0f, -1.0f); // Низ лево
 
-			////вид слева
-			Gl.glColor3ub(255, 255, 0);
-			Gl.glVertex3d(-1, 1, -1);
-			Gl.glVertex3d(-1, -1, -1);
-			Gl.glVertex3d(-1, -1, 1);
-			Gl.glVertex3d(-1, 1, 1);
+			//Gl.glEnd();
 
-			////вид справа
-			Gl.glColor3ub(0, 0, 255);
-			Gl.glVertex3d(1, 1, 1);
-			Gl.glVertex3d(1, -1, 1);
-			Gl.glVertex3d(1, -1, -1);
-			Gl.glVertex3d(1, 1, -1);
+			//Gl.glBindTexture(Gl.GL_TEXTURE_2D, 1);
 
-			///вид сверху
-			Gl.glColor3ub(0, 255, 0);
-			Gl.glVertex3d(-1, 1, -1);
-			Gl.glVertex3d(-1, 1, 1);
-			Gl.glVertex3d(1, 1, 1);
-			Gl.glVertex3d(1, 1, -1);
+			//Gl.glBegin(Gl.GL_QUADS);
+			// Верхняя грань
+			Gl.glTexCoord2f(0.0f, 1.0f); Gl.glVertex3d(-1.0f, 1.0f, -1.0f); // Верх лево
+			Gl.glTexCoord2f(0.0f, 0.0f); Gl.glVertex3d(-1.0f, 1.0f, 1.0f);  // Низ лево
+			Gl.glTexCoord2f(1.0f, 0.0f); Gl.glVertex3d(1.0f, 1.0f, 1.0f);   // Низ право
+			Gl.glTexCoord2f(1.0f, 1.0f); Gl.glVertex3d(1.0f, 1.0f, -1.0f);  // Верх право
 
-			////вид спереди
-			//Gl.glColor3ub(255, 0, 0);
-			Gl.glColor3ub(255, 255, 255);
-			Gl.glVertex3d(-1, 1, 1);
-			Gl.glVertex3d(-1, -1, 1);
-			Gl.glVertex3d(1, -1, 1);
-			Gl.glVertex3d(1, 1, 1);
+			// Нижняя грань
+			Gl.glTexCoord2f(1.0f, 1.0f); Gl.glVertex3d(-1.0f, -1.0f, -1.0f);    // Верх право
+			Gl.glTexCoord2f(0.0f, 1.0f); Gl.glVertex3d(1.0f, -1.0f, -1.0f); // Верх лево
+			Gl.glTexCoord2f(0.0f, 0.0f); Gl.glVertex3d(1.0f, -1.0f, 1.0f);  // Низ лево
+			Gl.glTexCoord2f(1.0f, 0.0f); Gl.glVertex3d(-1.0f, -1.0f, 1.0f); // Низ право
+
+			// Правая грань
+			Gl.glTexCoord2f(1.0f, 0.0f); Gl.glVertex3d(1.0f, -1.0f, -1.0f); // Низ право
+			Gl.glTexCoord2f(1.0f, 1.0f); Gl.glVertex3d(1.0f, 1.0f, -1.0f);  // Верх право
+			Gl.glTexCoord2f(0.0f, 1.0f); Gl.glVertex3d(1.0f, 1.0f, 1.0f);   // Верх лево
+			Gl.glTexCoord2f(0.0f, 0.0f); Gl.glVertex3d(1.0f, -1.0f, 1.0f);  // Низ лево
+
+			// Левая грань
+			/*Gl.glTexCoord2f(0.0f, 0.0f);*/ Gl.glVertex3d(-1.0f, -1.0f, -1.0f);    // Низ лево
+			/*Gl.glTexCoord2f(1.0f, 0.0f);*/ Gl.glVertex3d(-1.0f, -1.0f, 1.0f); // Низ право
+			/*Gl.glTexCoord2f(1.0f, 1.0f);*/ Gl.glVertex3d(-1.0f, 1.0f, 1.0f);  // Верх право
+			/*Gl.glTexCoord2f(0.0f, 1.0f);*/ Gl.glVertex3d(-1.0f, 1.0f, -1.0f); // Верх лево
+
+																			//////Вид сзади
+																			//Gl.glColor3ub(255, 0, 255);
+																			//Gl.glVertex3d(1, 1, -1);
+																			//Gl.glVertex3d(1, -1, -1);
+																			//Gl.glVertex3d(-1, -1, -1);
+																			//Gl.glVertex3d(-1, 1, -1);
+
+			//////вид снизу
+			//Gl.glColor3ub(0, 255, 255);
+			//Gl.glVertex3d(-1, -1, -1);
+			//Gl.glVertex3d(1, -1, -1);
+			//Gl.glVertex3d(1, -1, 1);
+			//Gl.glVertex3d(-1, -1, 1);
+
+			//////вид слева
+			//Gl.glColor3ub(255, 255, 0);
+			//Gl.glVertex3d(-1, 1, -1);
+			//Gl.glVertex3d(-1, -1, -1);
+			//Gl.glVertex3d(-1, -1, 1);
+			//Gl.glVertex3d(-1, 1, 1);
+
+			//////вид справа
+			//Gl.glColor3ub(0, 0, 255);
+			//Gl.glVertex3d(1, 1, 1);
+			//Gl.glVertex3d(1, -1, 1);
+			//Gl.glVertex3d(1, -1, -1);
+			//Gl.glVertex3d(1, 1, -1);
+
+			/////вид сверху
+			//Gl.glColor3ub(0, 255, 0);
+			//Gl.glVertex3d(-1, 1, -1);
+			//Gl.glVertex3d(-1, 1, 1);
+			//Gl.glVertex3d(1, 1, 1);
+			//Gl.glVertex3d(1, 1, -1);
+
+			//////вид спереди
+			////Gl.glColor3ub(255, 0, 0);
+			//Gl.glColor3ub(255, 255, 255);
+			//Gl.glVertex3d(-1, 1, 1);
+			//Gl.glVertex3d(-1, -1, 1);
+			//Gl.glVertex3d(1, -1, 1);
+			//Gl.glVertex3d(1, 1, 1);
 
 			Gl.glEnd();
 
