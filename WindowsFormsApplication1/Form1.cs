@@ -84,8 +84,9 @@ namespace OpenGL_cube {
 			Gl.glEnable(Gl.GL_CULL_FACE);
 			Gl.glCullFace(Gl.GL_BACK);
 
-			
-			
+			Gl.glEnable(Gl.GL_TEXTURE_2D);
+
+
 
 			float[] diffuseColorMaterial = { 1.0f, 1.0f, 1.0f, 1.0f };
 			Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, diffuseColorMaterial);
