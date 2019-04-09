@@ -134,7 +134,6 @@ namespace OpenGL_cube {
 			this.simpleOpenGlControl1.TabIndex = 0;
 			this.simpleOpenGlControl1.Paint += new System.Windows.Forms.PaintEventHandler(this.simpleOpenGlControl1_Paint);
 			this.simpleOpenGlControl1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
-			this.simpleOpenGlControl1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.simpleOpenGlControl1_KeyPress);
 			this.simpleOpenGlControl1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyUp);
 			// 
 			// Form1
