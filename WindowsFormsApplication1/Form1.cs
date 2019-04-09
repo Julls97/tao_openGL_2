@@ -90,12 +90,23 @@ namespace OpenGL_cube {
 
 			float[] diffuseColorMaterial = { 1.0f, 1.0f, 1.0f, 1.0f };
 			Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, diffuseColorMaterial);
-			Gl.glTranslated(0, 0, -5);
+			Gl.glTranslated(0, 0, -10);
 			creatTexture(@"E:\git projects\tao_openGL_2\3.bmp", 0);
 
 			creatTexture(@"E:\git projects\tao_openGL_2\4.bmp", 1);
 			creatTexture(@"E:\git projects\tao_openGL_2\1.bmp", 2);
 
+			float[] light0_diffuse = { 0.4f, 0.7f, 0.2f };
+			float[] light0_direction = { 1, 0.0f, 0.0f, 0.0f };
+			//Gl.glEnable(Gl.GL_LIGHTING);
+			Gl.glEnable(Gl.GL_LIGHT0);
+			Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_DIFFUSE, light0_diffuse);
+			Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, light0_direction);
+
+			System.Media.SoundPlayer player = new System.Media.SoundPlayer();
+
+			player.SoundLocation = @"E:\git projects\tao_openGL_2\1.wav";
+			player.Play();
 		}
 		private void creatTexture(String path, int level) {
 			var bmp = new Bitmap(path);
@@ -115,6 +126,8 @@ namespace OpenGL_cube {
 
 			bmp.UnlockBits(bmpData);
 		}
+		float rot = 0;
+		float gearspeed = 0.3f;
 		private void simpleOpenGlControl1_Paint(object sender, PaintEventArgs e) {
 			mouseControl();
 			KeyboardControl();
@@ -135,6 +148,9 @@ namespace OpenGL_cube {
 			Gl.glPolygonMode(Gl.GL_BACK, Gl.GL_LINES);
 
 			Look();
+
+			//GearsDraw();
+			//return;
 			Gl.glBegin(Gl.GL_QUADS);
 
 			Gl.glTexCoord2f(0.0f, 0.0f); Gl.glVertex3d(-1.0f, -1.0f, 1.0f); // Низ лево
@@ -185,6 +201,23 @@ namespace OpenGL_cube {
 			
 			Gl.glEnd();
 
+		}
+		private void GearsDraw() {
+			Gl.glPushMatrix();
+			rot += gearspeed;
+			Gl.glTranslated(-3.3, 0, 0);
+			Gl.glRotated(rot, 0, 0, 1);
+			Gear(1f, 3f, 1, 30, 1);
+			Gl.glPopMatrix();
+
+			Gl.glPushMatrix();
+			rot += gearspeed;
+
+			Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
+			Gl.glTranslated(3.3, 0, 0);
+			Gl.glRotated(-rot, 0, 0, 1);
+			Gear(1f, 3f, 1, 30, 1);
+			Gl.glPopMatrix();
 		}
 		private bool firstMouse = true;
 		private int lastX;
@@ -246,6 +279,118 @@ namespace OpenGL_cube {
 				Gl.glEnd();
 			}
 		}
+		public void Gear(float inner_radius, float outer_radius, float width, int teeth, float tooth_depth) {
+			float r0, r1, r2;
+			float angle, da;
+			float u, v, len;
+
+			r0 = inner_radius;
+			r1 = outer_radius - tooth_depth / 2.0f;
+			r2 = outer_radius + tooth_depth / 2.0f;
+			float Pi = (float)Math.PI;
+			da = 2.0f * Pi / teeth / 4.0f;
+			Gl.glShadeModel(Gl.GL_FLAT);
+			Gl.glNormal3f(0.0f, 0.0f, 1.0f);
+
+			// передняя сторона
+			Gl.glBegin(Gl.GL_QUAD_STRIP);
+			for (int i = 0; i < teeth +1; i++) {
+				angle = i * 2.0f * Pi / teeth;
+				Gl.glVertex3f(r0 * (float)Math.Cos(angle), r0 * (float)Math.Sin(angle), width * 0.5f);
+				Gl.glVertex3f(r1 * (float)Math.Cos(angle), r1 * (float)Math.Sin(angle), width * 0.5f);
+				Gl.glVertex3f(r0 * (float)Math.Cos(angle), r0 * (float)Math.Sin(angle), width * 0.5f);
+				Gl.glVertex3f(r1 * (float)Math.Cos(angle + 3 * da), r1 * (float)Math.Sin(angle + 3 * da), width * 0.5f);
+			}
+			Gl.glEnd();
+
+			// передняя сторона зубьев
+			Gl.glBegin(Gl.GL_QUADS);
+			da = 2.0f * Pi / teeth / 4.0f;
+			for (int i = 0; i < teeth; i++) {
+
+				//			for (int i = 0; i < teeth - 1; i++) {
+				angle = i * 2.0f * Pi / teeth;
+
+				Gl.glVertex3f(r1 * (float)Math.Cos(angle), r1 * (float)Math.Sin(angle), width * 0.5f);
+				Gl.glVertex3f(r2 * (float)Math.Cos(angle + da), r2 * (float)Math.Sin(angle + da), width * 0.5f);
+				Gl.glVertex3f(r2 * (float)Math.Cos(angle + 2 * da), r2 * (float)Math.Sin(angle + 2 * da), width * 0.5f);
+				Gl.glVertex3f(r1 * (float)Math.Cos(angle + 3 * da), r1 * (float)Math.Sin(angle + 3 * da), width * 0.5f);
+			}
+			Gl.glEnd();
+
+			Gl.glNormal3f(0.0f, 0.0f, -1.0f);
+
+			// задняя сторона
+			Gl.glBegin(Gl.GL_QUAD_STRIP);
+			for (int i = 0; i < teeth +1; i++) {
+				angle = i * 2.0f * Pi / teeth;
+				Gl.glVertex3f(r1 * (float)Math.Cos(angle), r1 * (float)Math.Sin(angle), -width * 0.5f);
+				Gl.glVertex3f(r0 * (float)Math.Cos(angle), r0 * (float)Math.Sin(angle), -width * 0.5f);
+				Gl.glVertex3f(r1 * (float)Math.Cos(angle + 3 * da), r1 * (float)Math.Sin(angle + 3 * da), -width * 0.5f);
+				Gl.glVertex3f(r0 * (float)Math.Cos(angle), r0 * (float)Math.Sin(angle), -width * 0.5f);
+
+			}
+			Gl.glEnd();
+
+			// обратная сторона зубьев
+			Gl.glBegin(Gl.GL_QUADS);
+			da = 2.0f * Pi / teeth / 4.0f;
+			//			for (int i = 0; i < teeth - 1; i++) {
+			for (int i = 0; i < teeth; i++) {
+
+				angle = i * 2.0f * Pi / teeth;
+
+				Gl.glVertex3f(r1 * (float)Math.Cos(angle + 3 * da), r1 * (float)Math.Sin(angle + 3 * da), -width * 0.5f);
+				Gl.glVertex3f(r2 * (float)Math.Cos(angle + 2 * da), r2 * (float)Math.Sin(angle + 2 * da), -width * 0.5f);
+				Gl.glVertex3f(r2 * (float)Math.Cos(angle + da), r2 * (float)Math.Sin(angle + da), -width * 0.5f);
+				Gl.glVertex3f(r1 * (float)Math.Cos(angle), r1 * (float)Math.Sin(angle), -width * 0.5f);
+			}
+			Gl.glEnd();
+
+			// внешняя сторона зубьев
+			Gl.glBegin(Gl.GL_QUAD_STRIP);
+			//	for (int i = 0; i < teeth - 1; i++) {
+			for (int i = 0; i < teeth; i++) {
+
+				angle = i * 2.0f * Pi / teeth;
+
+				Gl.glVertex3f(r1 * (float)Math.Cos(angle), r1 * (float)Math.Sin(angle), width * 0.5f);
+				Gl.glVertex3f(r1 * (float)Math.Cos(angle), r1 * (float)Math.Sin(angle), -width * 0.5f);
+				u = r2 * (float)Math.Cos(angle + da) - r1 * (float)Math.Cos(angle);
+				v = r2 * (float)Math.Sin(angle + da) - r1 * (float)Math.Sin(angle);
+				len = (float)Math.Sqrt(u * u + v * v);
+				u = u / len;
+				v = v / len;
+				Gl.glNormal3f(v, -u, 0.0f);
+				Gl.glVertex3f(r2 * (float)Math.Cos(angle + da), r2 * (float)Math.Sin(angle + da), width * 0.5f);
+				Gl.glVertex3f(r2 * (float)Math.Cos(angle + da), r2 * (float)Math.Sin(angle + da), -width * 0.5f);
+				Gl.glNormal3f((float)Math.Cos(angle), (float)Math.Sin(angle), 0.0f);
+				Gl.glVertex3f(r2 * (float)Math.Cos(angle + 2 * da), r2 * (float)Math.Sin(angle + 2 * da), width * 0.5f);
+				Gl.glVertex3f(r2 * (float)Math.Cos(angle + 2 * da), r2 * (float)Math.Sin(angle + 2 * da), -width * 0.5f);
+				u = r1 * (float)Math.Cos(angle + 3 * da) - r2 * (float)Math.Cos(angle + 2 * da);
+				v = r1 * (float)Math.Sin(angle + 3 * da) - r2 * (float)Math.Sin(angle + 2 * da);
+				Gl.glNormal3f(v, -u, 0.0f);
+				Gl.glVertex3f(r1 * (float)Math.Cos(angle + 3 * da), r1 * (float)Math.Sin(angle + 3 * da), width * 0.5f);
+				Gl.glVertex3f(r1 * (float)Math.Cos(angle + 3 * da), r1 * (float)Math.Sin(angle + 3 * da), -width * 0.5f);
+				Gl.glNormal3f((float)Math.Cos(angle), (float)Math.Sin(angle), 0.0f);
+			}
+			Gl.glVertex3f(r1 * (float)Math.Cos(0), r1 * (float)Math.Sin(0), width * 0.5f);
+			Gl.glVertex3f(r1 * (float)Math.Cos(0), r1 * (float)Math.Sin(0), -width * 0.5f);
+
+			Gl.glEnd();
+
+			Gl.glShadeModel(Gl.GL_SMOOTH);
+
+			// внутренний цилиндр
+			Gl.glBegin(Gl.GL_QUAD_STRIP);
+			for (int i = 0; i < teeth+1; i++) {
+				angle = i * 2.0f * Pi / teeth;
+				Gl.glNormal3f(-(float)Math.Cos(angle), -(float)Math.Sin(angle), 0.0f);
+				Gl.glVertex3f(r0 * (float)Math.Cos(angle), r0 * (float)Math.Sin(angle), -width * 0.5f);
+				Gl.glVertex3f(r0 * (float)Math.Cos(angle), r0 * (float)Math.Sin(angle), width * 0.5f);
+			}
+			Gl.glEnd();
+		}
 		private void Look() {
 			gluLookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 			//Glu.gluLookAt(xrot, yrot, zrot, 0, 0, 0, 0, 1, 0);
@@ -300,5 +445,5 @@ namespace OpenGL_cube {
 			}
 		}
 	}
-
+	
 }
